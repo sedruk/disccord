@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdlib>
 
+#include <cpprest/interopstream.h>
+
 #include <disccord/ws/client.hpp>
 
 using namespace disccord::ws;
@@ -52,10 +54,16 @@ int main()
 
     client.connect().then([]()
     {
-        std::cout << "Connected." << std::endl;
+        std::cout << "Connected. Press any key to exit." << std::endl;
     }).wait();
 
     pplx::task_completion_event<void> event;
+
+    Concurrency::streams::stdio_istream<std::istream::char_type> cin{std::cin};
+    cin.read().then([&event](Concurrency::streams::stdio_istream<std::istream::char_type>::int_type c)
+    {
+        event.set();
+    });
 
     pplx::create_task(event).wait();
 }
