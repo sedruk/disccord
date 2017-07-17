@@ -33,7 +33,8 @@ namespace disccord
                 int32_t get_mfa_level();
                 int32_t get_verification_level();
                 int32_t get_default_message_notifications();
-                bool get_embed_enabled();
+                util::optional<bool> get_embed_enabled();
+                util::optional<bool> get_unavailable();
                 util::optional<uint64_t> get_embed_channel_id();
                 util::optional<std::vector<voice_state>> get_voice_states();
                 std::vector<std::string> get_features();
@@ -52,7 +53,7 @@ namespace disccord
                 uint64_t owner_id;
                 util::optional<uint64_t> afk_channel_id, embed_channel_id;
                 int32_t afk_timeout, mfa_level, verification_level, default_message_notifications;
-                bool embed_enabled;
+                util::optional<bool> embed_enabled, unavailable;
                 util::optional<std::vector<voice_state>> voice_states;
                 std::vector<std::string> features;
                 util::optional<std::vector<role>> roles;

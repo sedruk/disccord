@@ -10,7 +10,7 @@ namespace disccord
             : entity(), name(""), region(""), icon(), splash(), owner_id(0),
             afk_channel_id(), embed_channel_id(), afk_timeout(0),
             mfa_level(0), verification_level(0), default_message_notifications(0),
-            embed_enabled(false), features(), roles(), 
+            embed_enabled(), unavailable(), features(), roles(), 
             emojis(), members(), channels(), presences()
         { }
 
@@ -68,7 +68,8 @@ namespace disccord
             mfa_level = json.at("mfa_level").as_integer();
             verification_level = json.at("verification_level").as_integer();
             default_message_notifications = json.at("default_message_notifications").as_integer();
-            embed_enabled = json.at("embed_enabled").as_bool();
+            get_field(embed_enabled, as_bool);
+            get_field(unavailable, as_bool);
             get_id_field(embed_channel_id);
             get_composite_field_vector(roles, role);
             get_composite_field_vector(emojis, emoji);
@@ -109,7 +110,10 @@ namespace disccord
             info["mfa_level"] = web::json::value(mfa_level);
             info["verification_level"] = web::json::value(verification_level);
             info["default_message_notifications"] = web::json::value(default_message_notifications);
-            info["embed_enabled"] = web::json::value(get_embed_enabled());
+            if (get_embed_enabled().is_specified())
+                info["embed_enabled"] = web::json::value(get_embed_enabled().get_value());
+            if (get_unavailable().is_specified())
+                info["unavailable"] = web::json::value(get_unavailable().get_value());
             if (get_embed_channel_id().is_specified())
                 info["embed_channel_id"] = web::json::value(std::to_string(get_embed_channel_id().get_value()));
 
@@ -160,6 +164,7 @@ namespace disccord
         define_get_method(verification_level)
         define_get_method(default_message_notifications)
         define_get_method(embed_enabled)
+        define_get_method(unavailable)
         define_get_method(embed_channel_id)
         define_get_method(voice_states)
         define_get_method(features)

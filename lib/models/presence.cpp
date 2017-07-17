@@ -8,7 +8,7 @@ namespace disccord
     {
         presence::presence()
         : user(), roles(), game(),
-        guild_id(0), status("")
+        guild_id(), status("")
         { }
 
         presence::~presence()
@@ -17,8 +17,18 @@ namespace disccord
         void presence::decode(web::json::value json)
         {
             status = json.at("status").as_string();
-            guild_id = std::stoull(json.at("guild_id").as_string());
 
+            #define get_id_field(var) \
+                if (json.has_field(#var)) { \
+                    auto field = json.at(#var); \
+                    if (!field.is_null()) { \
+                        var = decltype(var)(std::stoull(field.as_string())); \
+                    } else { \
+                        var = decltype(var)::no_value(); \
+                    } \
+                } else { \
+                    var = decltype(var)(); \
+                }
             #define get_composite_field(var, type) \
                 if (json.has_field(#var)) { \
                     auto field = json.at(#var); \
@@ -33,7 +43,8 @@ namespace disccord
                     var = decltype(var)(); \
                 }
 
-            get_composite_field(user, models::user);
+            get_id_field(guild_id);
+            //get_composite_field(user, models::user); //NOTE: only id is sent
             get_composite_field(game, models::game);
 
             if (json.has_field("roles"))
@@ -47,13 +58,15 @@ namespace disccord
                 roles = roles_array;
             }
 
+            #undef get_id_field
             #undef get_composite_field
         }
 
         void presence::encode_to(std::unordered_map<std::string, web::json::value> &info)
         {
             info["status"] = web::json::value(get_status());
-            info["guild_id"] = web::json::value(std::to_string(get_guild_id()));
+            if (guild_id.is_specified())
+                info["guild_id"] = web::json::value(std::to_string(get_guild_id()));
             if (user.is_specified())
                 info["user"] = get_user().get_value().encode();
             if (game.is_specified())

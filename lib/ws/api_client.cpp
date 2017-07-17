@@ -50,6 +50,13 @@ namespace disccord
                 });
             }
 
+            pplx::task<void> ws_api_client::send(const std::string& message)
+            {
+                web::websockets::client::websocket_outgoing_message om;
+                om.set_utf8_message(std::move(message));
+                return ws_client.send(om);
+            }
+
             void ws_api_client::set_frame_handler(const std::function<pplx::task<void>(const disccord::ws::models::frame*)>& func)
             {
                 message_handler = func;
@@ -98,6 +105,11 @@ namespace disccord
                 }
 
                 return pplx::create_task([](){});
+            }
+            
+            std::string ws_api_client::get_token() const
+            {
+                return token;
             }
         }
     }

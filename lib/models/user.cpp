@@ -35,7 +35,7 @@ namespace disccord
                 }
 
             get_field(avatar, as_string);
-            bot = json.at("bot").as_bool();
+            //bot = json.at("bot").as_bool();
             //get_field(bot, as_bool);
             get_field(mfa_enabled, as_bool);
             get_field(verified, as_bool);

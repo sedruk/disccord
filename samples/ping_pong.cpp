@@ -50,6 +50,21 @@ int main()
 
     discord_ws_client client {token, token_type};
 
+    client.event(event::MESSAGE_CREATE, [&](disccord::models::message msg)
+    {
+        auto auth = msg.get_author().get_value();
+        std::cout << auth.get_username() << "#" << auth.get_discriminator()
+                  << ": " << msg.get_content() << '\n';       
+    });
+    
+    client.event(event::MESSAGE_DELETE, [&](disccord::models::message msg)
+    {
+        auto auth = msg.get_author().get_value();
+        std::cout << auth.get_username() << "#" 
+                  << auth.get_discriminator() << ": " << msg.get_content() 
+                  << " [MESSAGE DELETED]\n";       
+    });
+    
     std::cout << "Connecting..." << std::endl;
 
     client.connect().then([]()
@@ -62,6 +77,7 @@ int main()
     Concurrency::streams::stdio_istream<std::istream::char_type> cin{std::cin};
     cin.read().then([&event](Concurrency::streams::stdio_istream<std::istream::char_type>::int_type c)
     {
+        std::cout << "hey\n"; //temp
         event.set();
     });
 

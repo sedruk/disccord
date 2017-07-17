@@ -22,7 +22,7 @@ namespace disccord
                 util::optional<models::user> get_user();
                 std::vector<uint64_t> get_roles();
                 util::optional<models::game> get_game();
-                uint64_t get_guild_id();
+                util::optional<uint64_t> get_guild_id();
                 std::string get_status();
 
             protected:
@@ -32,7 +32,7 @@ namespace disccord
                 util::optional<models::user> user;
                 std::vector<uint64_t> roles;
                 util::optional<models::game> game;
-                uint64_t guild_id;
+                util::optional<uint64_t> guild_id;
                 std::string status;
         };
     }

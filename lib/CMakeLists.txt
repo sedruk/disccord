@@ -39,7 +39,8 @@ rest/models/edit_message_args.cpp rest/models/bulk_delete_message_args.cpp
 rest/models/edit_channel_permissions_args.cpp
 rest/models/create_channel_invite_args.cpp
 rest/models/add_dm_recipient_args.cpp models/gateway_info.cpp
-ws/api_client.cpp ws/client.cpp ws/models/frame.cpp)
+ws/api_client.cpp ws/client.cpp ws/connection.cpp ws/dispatcher.cpp
+ws/models/frame.cpp ws/models/hello.cpp ws/models/ready.cpp ws/models/partial.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
