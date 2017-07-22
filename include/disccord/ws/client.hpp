@@ -45,7 +45,7 @@ namespace disccord
                 internal::connection state;
                 
                 std::string session_id;
-                uint32_t sequence, heartbeat_count;
+                uint32_t sequence, heartbeat_count, ack_count;
 
                 pplx::cancellation_token_source heartbeat_cancel_token;
                 pplx::task<void> heartbeat_task;

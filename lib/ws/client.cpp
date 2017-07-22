@@ -22,7 +22,7 @@ namespace disccord
 
         discord_ws_client::discord_ws_client(std::string token, disccord::token_type type)
             : rest_api_client(base_uri, token, type), ws_api_client(rest_api_client, token, type),
-            dispatcher(), state(5000), session_id(""), sequence(0), heartbeat_count(0),
+            dispatcher(), state(5000), session_id(""), sequence(0), heartbeat_count(0), ack_count(0),
             heartbeat_cancel_token(), heartbeat_task()
         {
             ws_api_client.set_frame_handler([this](const disccord::ws::models::frame* frame)
@@ -77,6 +77,7 @@ namespace disccord
                 }
                 case opcode::HEARTBEAT_ACK:
                     std::cout << "Heartbeat acknowledged\n--------------\n";
+                    ack_count++;
                     break;
                 case opcode::DISPATCH:
                     handle_dispatch(frame);
@@ -150,6 +151,11 @@ namespace disccord
             return pplx::create_task([wait_ms,this](){
                 while(!pplx::is_task_cancellation_requested())
                 {
+                    if (heartbeat_count != ack_count)
+                    {
+                        std::cout << "HEARTBEAT NOT ACKNOWLEDGED. Reconnecting...\n";
+                        ws_api_client.close(web::websockets::client::websocket_close_status::normal).wait();
+                    }
                     heartbeat_count++;
                     
                     web::json::value frame;

@@ -32,6 +32,8 @@ namespace disccord
                     pplx::task<void> connect(const pplx::cancellation_token& token = pplx::cancellation_token::none());
                     
                     pplx::task<void> send(const std::string& message);
+                    
+                    pplx::task<void> close(web::websockets::client::websocket_close_status status);
 
                     void set_frame_handler(const std::function<pplx::task<void>(const disccord::ws::models::frame*)>& func);
                     

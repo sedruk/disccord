@@ -52,11 +52,16 @@ namespace disccord
 
             pplx::task<void> ws_api_client::send(const std::string& message)
             {
-                web::websockets::client::websocket_outgoing_message om;
+                websocket_outgoing_message om;
                 om.set_utf8_message(std::move(message));
                 return ws_client.send(om);
             }
 
+            pplx::task<void> ws_api_client::close(websocket_close_status status)
+            {
+                return ws_client.close(status);
+            }
+            
             void ws_api_client::set_frame_handler(const std::function<pplx::task<void>(const disccord::ws::models::frame*)>& func)
             {
                 message_handler = func;
